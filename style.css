@@ -1,0 +1,85 @@
+* { box-sizing: border-box; font-family: system-ui, Arial, sans-serif; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:24px;
+  background: linear-gradient(135deg, #eef2ff, #f7f7ff);
+  color:#1f2333;
+}
+
+.card{
+  width:100%;
+  max-width:640px;
+  background:#fff;
+  border-radius:18px;
+  padding:34px 34px 28px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+  position:relative;
+}
+
+.badge{
+  position:absolute;
+  top:18px;
+  right:18px;
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#eef2ff;
+  color:#3f4aa1;
+}
+
+h1{
+  margin:0 0 8px;
+  font-size:36px;
+  letter-spacing:0.5px;
+}
+
+h2{
+  margin:0 0 14px;
+  font-weight:600;
+  color:#4b4f86;
+}
+
+.desc{
+  margin:0 0 26px;
+  line-height:1.7;
+  color:#3a3d55;
+}
+
+.project{
+  border-left:4px solid #7c7cff;
+  padding-left:16px;
+}
+
+.project h3{
+  margin:0 0 6px;
+  font-size:18px;
+}
+
+.project p{
+  margin:0;
+  color:#3a3d55;
+  line-height:1.6;
+}
+
+.btn{
+  display:inline-block;
+  margin-top:18px;
+  padding:12px 22px;
+  border-radius:999px;
+  background:#7c7cff;
+  color:#fff;
+  text-decoration:none;
+  font-weight:600;
+  box-shadow: 0 10px 18px rgba(124,124,255,0.25);
+  transition: transform .15s ease, background .2s ease;
+}
+
+.btn:hover{
+  background:#6366f1;
+  transform: translateY(-1px);
+}
