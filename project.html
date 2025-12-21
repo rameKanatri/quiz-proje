@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Çevir ve Öğren</title>
+
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, Arial, sans-serif; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #A3D9D3;
+      color: #003B46;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: 0.3s;
+      padding: 18px;
+    }
+
+    body.dark {
+      background: #004D52;
+      color: #E8F8F7;
+    }
+
+    .centerCard {
+      text-align: center;
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      padding: 26px;
+      border-radius: 16px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+    }
+
+    body.dark .centerCard {
+      background: #006469;
+      color: white;
+    }
+
+    .centerCard h1 { margin: 0 0 8px; }
+    .centerCard .sub {
+      margin: 0 0 14px;
+      font-size: 14px;
+      opacity: 0.85;
+    }
+
+    .centerCard .info {
+      background: rgba(0, 59, 70, 0.08);
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin: 10px 0 14px;
+      font-size: 14px;
+    }
+    body.dark .centerCard .info { background: rgba(232, 248, 247, 0.12); }
+
+    .primaryBtn {
+      width: 100%;
+      padding: 14px;
+      background: #007C85;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .primaryBtn:hover { transform: scale(1.02); }
+
+    .linkBtn {
+      margin-top: 10px;
+      font-size: 13px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #004D52;
+      text-decoration: underline;
+    }
+    body.dark .linkBtn { color: #E8F8F7; }
+
+    .secondaryBtn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 16px;
+      background: rgba(0, 59, 70, 0.08);
+      color: inherit;
+    }
+    body.dark .secondaryBtn { background: rgba(232, 248, 247, 0.12); }
+
+    #gameArea {
+      display: none;
+      width: 100%;
+      max-width: 650px;
+    }
+
+    .panel {
+      width: 100%;
+      background: white;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+    }
+    body.dark .panel {
+      background: #006469;
+      color: #E8F8F7;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      flex-wrap: wrap;
+    }
+
+    .top .left {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0, 59, 70, 0.08);
+      font-size: 13px;
+    }
+    body.dark .badge { background: rgba(232, 248, 247, 0.12); }
+
+    .top .right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .miniBtn {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: rgba(0, 59, 70, 0.08);
+      color: inherit;
+      font-size: 13px;
+    }
+    body.dark .miniBtn { background: rgba(232, 248, 247, 0.12); }
+
+    #themeBtn {
+      background: white;
+      color: #003B46;
+    }
+    body.dark #themeBtn {
+      background: #004D52;
+      color: #E8F8F7;
+    }
+
+    #scoreBox {
+      font-size: 14px;
+      opacity: 0.95;
+      margin-bottom: 10px;
+    }
+
+    #wordCard {
+      background: rgba(0, 59, 70, 0.06);
+      padding: 22px 18px;
+      border-radius: 16px;
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 14px;
+    }
+    body.dark #wordCard { background: rgba(232, 248, 247, 0.10); }
+
+    .option {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      background: #E3F4F3;
+      color: #003B46;
+      transition: transform 0.15s;
+    }
+    body.dark .option {
+      background: rgba(232, 248, 247, 0.14);
+      color: #E8F8F7;
+    }
+
+    .correct { background: #4CAF50 !important; color: white !important; }
+    .wrong {
+      background: #D9534F !important;
+      color: white !important;
+      animation: shake 0.28s;
+    }
+
+    @keyframes shake {
+      0%   { transform: translateX(0); }
+      25%  { transform: translateX(-6px); }
+      50%  { transform: translateX(6px); }
+      75%  { transform: translateX(-4px); }
+      100% { transform: translateX(0); }
+    }
+
+    #progressOuter {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(0, 59, 70, 0.28);
+      overflow: hidden;
+      margin: 10px 0 14px;
+    }
+    body.dark #progressOuter { background: rgba(232, 248, 247, 0.28); }
+
+    #progressInner {
+      width: 0%;
+      height: 100%;
+      border-radius: 999px;
+      background: #00A8B5;
+      transition: width 0.25s ease-out, background 0.2s;
+    }
+
+    .nav-row { display: flex; gap: 12px; }
+
+    .nav-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      font-size: 17px;
+      background: #007C85;
+      color: white;
+    }
+
+    .nav-btn:disabled { opacity: 0.45; cursor: default; }
+
+    #status {
+      margin-top: 10px;
+      opacity: 0.85;
+      font-size: 14px;
+      text-align: right;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="startArea" class="centerCard">
+    <h1>Çevir ve Öğren</h1>
+    <p class="sub">Türkçe → İngilizce</p>
+
+    <div class="info" id="startInfo">En iyi seviye: 1</div>
+
+    <button id="startBtn" class="primaryBtn">Başla</button>
+    <button id="resetBtn" class="linkBtn">İlerlemeyi Sıfırla</button>
+  </div>
+
+  <div id="gameArea">
+    <div class="panel">
+
+      <div class="top">
+        <div class="left">
+          <span class="badge">Türkçe → İngilizce</span>
+          <span class="badge" id="levelBadge">Seviye: 1</span>
+        </div>
+
+        <div class="right">
+          <button id="themeBtn" class="miniBtn">☀️ Açık Mod</button>
+          <button id="menuBtn" class="miniBtn">Ana Menü</button>
+        </div>
+      </div>
+
+      <div id="scoreBox">Seviye: 1 | Puan: 0</div>
+
+      <div id="wordCard">
+        <span id="wordText">kelime</span>
+      </div>
+
+      <div id="optionsArea"></div>
+
+      <div id="progressOuter">
+        <div id="progressInner"></div>
+      </div>
+
+      <div class="nav-row">
+        <button id="nextBtn" class="nav-btn">Sonraki →</button>
+      </div>
+
+      <div id="status">Soru: 1 / 10</div>
+    </div>
+  </div>
+
+  <div id="finishArea" class="centerCard" style="display:none;">
+    <h1>🎉 Tebrikler!</h1>
+    <p class="sub">Tüm seviyeleri bitirdin</p>
+
+    <button id="restartBtn" class="primaryBtn">Yeniden Başla (Seviye 1)</button>
+    <button id="finishMenuBtn" class="secondaryBtn">Ana Menü</button>
+  </div>
+
+<script>
+  const levelWords = {
+    1: [
+      { tr: "kitap",  en: "book" },
+      { tr: "ev",     en: "house" },
+      { tr: "kapı",   en: "door" },
+      { tr: "su",     en: "water" },
+      { tr: "kalem",  en: "pen" },
+      { tr: "masa",   en: "table" },
+      { tr: "uçak",   en: "airplane" },
+      { tr: "bardak", en: "cup" },
+      { tr: "okul",   en: "school" },
+      { tr: "araba",  en: "car" }
+    ],
+    2: [
+      { tr: "doktor",   en: "doctor" },
+      { tr: "yıldız",   en: "star" },
+      { tr: "yağmur",   en: "rain" },
+      { tr: "mutfak",   en: "kitchen" },
+      { tr: "elbise",   en: "dress" },
+      { tr: "şeker",    en: "sugar" },
+      { tr: "çanta",    en: "bag" },
+      { tr: "sandalye", en: "chair" }
+    ],
+    3: [
+      { tr: "gelecek",   en: "future" },
+      { tr: "tecrübe",    en: "experience" },
+      { tr: "fırsat",     en: "opportunity" },
+      { tr: "gelenek",    en: "tradition" },
+      { tr: "kararlılık", en: "determination" },
+      { tr: "duyarlılık", en: "sensitivity" }
+    ]
+  };
+
+  let bestLevel = 1;
+  const saved = Number(localStorage.getItem("bestLevelTR_EN") || "1");
+  if (!Number.isNaN(saved) && saved >= 1 && saved <= 3) bestLevel = saved;
+
+  let currentLevel = 1;
+  let words = [];
+  let currentIndex = 0;
+  let currentCorrect = "";
+  let userAnswers = [];
+  let score = 0;
+
+  const startArea  = document.getElementById("startArea");
+  const gameArea   = document.getElementById("gameArea");
+  const finishArea = document.getElementById("finishArea");
+
+  const startBtn = document.getElementById("startBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const themeBtn = document.getElementById("themeBtn");
+  const menuBtn  = document.getElementById("menuBtn");
+
+  const startInfo     = document.getElementById("startInfo");
+  const levelBadge    = document.getElementById("levelBadge");
+  const scoreBox      = document.getElementById("scoreBox");
+  const wordText      = document.getElementById("wordText");
+  const optionsArea   = document.getElementById("optionsArea");
+  const progressInner = document.getElementById("progressInner");
+  const statusEl      = document.getElementById("status");
+  const nextBtn       = document.getElementById("nextBtn");
+
+  const restartBtn    = document.getElementById("restartBtn");
+  const finishMenuBtn = document.getElementById("finishMenuBtn");
+
+  // başlangıç ekranındaki "En iyi seviye" yazısını günceller.
+  function updateStartInfo() {
+    startInfo.textContent = `En iyi seviye: ${bestLevel}`;
+  }
+
+  // temaya göre ilerleme çubuğunun rengini ayarlar.
+  function updateProgressBarColor() {
+    const isDark = document.body.classList.contains("dark");
+    progressInner.style.background = isDark ? "#00E676" : "#00A8B5";
+  }
+
+  //  localStorage'daki temayı (dark/light) okuyup sayfaya uygular.
+  function applySavedTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    const isDark = (savedTheme === "dark");
+    document.body.classList.toggle("dark", isDark);
+    themeBtn.textContent = isDark ? "🌙 Koyu Mod" : "☀️ Açık Mod";
+    updateProgressBarColor();
+  }
+
+  //  userAnswers dizisinden doğru sayısını hesaplayıp score değerine yazar.
+  function calcScoreFromAnswers() {
+    score = userAnswers.reduce((t, v) => t + (v === true ? 1 : 0), 0);
+  }
+
+  //  seviye rozetini ve puan yazısını günceller (score'u yeniden hesaplar).
+  function updateHeader() {
+    levelBadge.textContent = `Seviye: ${currentLevel}`;
+    calcScoreFromAnswers();
+    scoreBox.textContent = `Seviye: ${currentLevel} | Puan: ${score}`;
+  }
+
+  //  mevcut soruya göre ilerleme çubuğunun yüzde doluluk oranını günceller.
+  function updateProgress() {
+    if (!words || words.length === 0) return;
+    if (words.length === 1) {
+      progressInner.style.width = "100%";
+      return;
+    }
+    const progress = (currentIndex / (words.length - 1)) * 100;
+    progressInner.style.width = progress + "%";
+  }
+
+  //  "Soru: x / y" yazısını günceller.
+  function updateStatus() {
+    statusEl.textContent = `Soru: ${currentIndex + 1} / ${words.length}`;
+  }
+
+  //  bir dizinin elemanlarını rastgele karıştırır (Fisher-Yates).
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+
+  //  sadece verilen ekranı gösterir (start/game/finish) ve diğerlerini gizler.
+  function showOnly(area) {
+    startArea.style.display  = "none";
+    gameArea.style.display   = "none";
+    finishArea.style.display = "none";
+    area.style.display = "block";
+    applySavedTheme();
+  }
+
+  //  mevcut soruyu ekrana yazar ve 4 tane seçenek butonu oluşturur.
+  function showQuestion() {
+    const item = words[currentIndex];
+    wordText.textContent = item.tr;
+    currentCorrect = item.en;
+
+    optionsArea.innerHTML = "";
+
+    const opts = [currentCorrect];
+    while (opts.length < 4) {
+      const r = words[Math.floor(Math.random() * words.length)].en;
+      if (!opts.includes(r)) opts.push(r);
+    }
+    shuffle(opts);
+
+    opts.forEach(text => {
+      const btn = document.createElement("button");
+      btn.className = "option";
+      btn.textContent = text;
+      btn.onclick = () => checkAnswer(btn);
+      optionsArea.appendChild(btn);
+    });
+
+    updateHeader();
+    updateProgress();
+    updateStatus();
+  }
+
+  //  kullanıcı bir seçeneğe tıklayınca doğru/yanlış kontrolünü yapar ve butonları kilitler.
+  function checkAnswer(clickedBtn) {
+    const buttons = optionsArea.querySelectorAll("button");
+    const isCorrect = (clickedBtn.textContent === currentCorrect);
+
+    buttons.forEach(b => b.disabled = true);
+
+    buttons.forEach(b => {
+      if (b.textContent === currentCorrect) b.classList.add("correct");
+    });
+
+    if (!isCorrect) clickedBtn.classList.add("wrong");
+
+    userAnswers[currentIndex] = isCorrect;
+    updateHeader();
+  }
+
+  // seviye bitince geçme/kalma kontrolünü yapar; geçerse yeni seviyeyi başlatır, 3'te bitirir.
+  function finishLevel() {
+    calcScoreFromAnswers();
+    const needed = Math.ceil(words.length * 0.7);
+
+    if (score >= needed) {
+      if (currentLevel < 3) {
+        const nextLevel = currentLevel + 1;
+        alert(`Tebrikler! Puanın ${score}. Level ${nextLevel}'e geçiyorsun.`);
+        currentLevel = nextLevel;
+
+        if (currentLevel > bestLevel) {
+          bestLevel = currentLevel;
+          localStorage.setItem("bestLevelTR_EN", String(bestLevel));
+        }
+
+        words = levelWords[currentLevel];
+        currentIndex = 0;
+        userAnswers = new Array(words.length).fill(null);
+        progressInner.style.width = "0%";
+        showQuestion();
+      } else {
+        progressInner.style.width = "100%";
+        showOnly(finishArea);
+      }
+    } else {
+      alert(`Seviye bitti. Puanın: ${score}. Geçmek için en az ${needed} puan gerekiyordu.`);
+      goToMenu();
+    }
+  }
+
+  //  başlangıç ekranına (ana menüye) döndürür.
+  function goToMenu() {
+    updateStartInfo();
+    showOnly(startArea);
+  }
+
+  //  oyunu bestLevel'dan başlatır ve oyun verilerini sıfırlar.
+  function startGame() {
+    currentLevel = bestLevel;
+    words = levelWords[currentLevel];
+
+    currentIndex = 0;
+    userAnswers = new Array(words.length).fill(null);
+    progressInner.style.width = "0%";
+
+    showOnly(gameArea);
+    showQuestion();
+  }
+
+  // Başlat butonu: oyunu başlatır.
+  startBtn.onclick = startGame;
+
+  // Sıfırla butonu: ilerlemeyi (bestLevel) sıfırlar ve localStorage'a yazar.
+  resetBtn.onclick = () => {
+    bestLevel = 1;
+    localStorage.setItem("bestLevelTR_EN", "1");
+    updateStartInfo();
+    alert("İlerleme sıfırlandı. Oyun 1. seviyeden başlayacak.");
+  };
+
+  // Tema butonu: dark/light temayı değiştirir ve kaydeder.
+  themeBtn.onclick = () => {
+    document.body.classList.toggle("dark");
+    const isDark = document.body.classList.contains("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    themeBtn.textContent = isDark ? "🌙 Koyu Mod" : "☀️ Açık Mod";
+    updateProgressBarColor();
+  };
+
+  // Menü butonu: ana menüye döner.
+  menuBtn.onclick = () => goToMenu();
+
+  // Sonraki butonu: sonraki soruya geçer; son sorudaysa seviyeyi bitirir.
+  nextBtn.onclick = () => {
+    if (currentIndex === words.length - 1) {
+      progressInner.style.width = "100%";
+      finishLevel();
+      return;
+    }
+    currentIndex++;
+    showQuestion();
+  };
+
+  // Yeniden başla butonu: bestLevel'i 1 yapar ve oyunu yeniden başlatır.
+  restartBtn.onclick = () => {
+    bestLevel = 1;
+    localStorage.setItem("bestLevelTR_EN", "1");
+    startGame();
+  };
+
+  // Finish ekranındaki ana menü butonu: ana menüye döner.
+  finishMenuBtn.onclick = () => {
+    goToMenu();
+  };
+
+  updateStartInfo();
+  applySavedTheme();
+</script>
+
+</body>
+</html>
